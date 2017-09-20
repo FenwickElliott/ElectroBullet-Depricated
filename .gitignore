@@ -1,3 +1,4 @@
 # enviroment variables are stored in and exported form secrets.* files
 secrets.*
 get_me.json
+db/*

@@ -9,11 +9,12 @@ function get (endpoint, target){
     })
     .then(res => res.json())
     .then(function(json){
-        console.log(json);
         jsonfile.writeFile('./db/'+ target +'.json', json, err => console.log(err));
         return;
     });
 }
+
+// nb user must create a ./db folder
 
 // Get all SMS threads
 get('permanents/' + Secrets.deviceIden + '_threads', 'threads');
