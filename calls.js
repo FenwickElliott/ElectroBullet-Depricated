@@ -15,12 +15,17 @@ function get (endpoint, target){
 }
 
 // nb user must create a ./db folder
+function initialize (){
+    // Get all SMS threads
+    get('permanents/' + Secrets.deviceIden + '_threads', 'threads');
 
-// Get all SMS threads
-get('permanents/' + Secrets.deviceIden + '_threads', 'threads');
+    // Get user info
+    get('users/me', 'user_info');
 
-// Get user info
-get('users/me', 'user_info');
+    // Get devices
+    get('devices', 'devices');
+}
 
-// Get devices
-get('devices', 'devices');
+module.exports.get = get;
+module.exports.initialize = initialize;
+module.exports.bark = bark;
