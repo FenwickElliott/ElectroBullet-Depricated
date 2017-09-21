@@ -26,6 +26,7 @@ function initialize (){
     get('devices', 'devices');
 }
 
+initialize();
+
 module.exports.get = get;
 module.exports.initialize = initialize;
-module.exports.bark = bark;
