@@ -14,6 +14,17 @@ function get (endpoint, target){
     });
 }
 
+function getThread (id) {
+    fetch('https://api.pushbullet.com/v2/permanents/' + Secrets.deviceIden + '_thread_' + id, {
+        headers: {"Access-Token": Secrets.apiKey}
+    })
+    .then(res => res.json())
+    .then(function(json){
+        jsonfile.writeFile('./db/threads/thread'+ id +'.json', json, err => console.log(err));
+        return;
+    });
+}
+
 // nb user must create a ./db folder
 function initialize (){
     // Get all SMS threads
@@ -29,4 +40,5 @@ function initialize (){
 initialize();
 
 module.exports.get = get;
+module.exports.getThread = getThread;
 module.exports.initialize = initialize;
