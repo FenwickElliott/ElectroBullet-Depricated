@@ -1,4 +1,4 @@
-var jsonfile = require('jsonfile');
+const jsonfile = require('jsonfile');
 const Calls = require('./calls');
 var magazine = document.getElementById('magazine');
 var bulk = document.getElementById('bulk');
@@ -7,7 +7,9 @@ var x = jsonfile.readFileSync('./db/threads.json');
 
 function loadThread(id){
     Calls.getThread(id);
-    bulk.innerHTML = id;
+    let thread = jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
+        bulk.innerHTML = obj['thread'][0]['body'];
+      });
 }
 
 for (var i = 0; i < 15; i++){
