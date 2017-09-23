@@ -1,8 +1,14 @@
 var jsonfile = require('jsonfile');
 const Calls = require('./calls');
 var magazine = document.getElementById('magazine');
+var bulk = document.getElementById('bulk');
 
-var x = jsonfile.readFileSync('./db/threads.json')
+var x = jsonfile.readFileSync('./db/threads.json');
+
+function loadThread(id){
+    Calls.getThread(id);
+    bulk.innerHTML = id;
+}
 
 for (var i = 0; i < 15; i++){
     let shade;
@@ -12,9 +18,11 @@ for (var i = 0; i < 15; i++){
         shade = 'dark';
     }
     magazine.innerHTML += `
-        <div class="${shade}" id="conversation${i}" onclick="Calls.getThread(${x.threads[i].id})">
+        <div class="${shade}" id="conversation${i}" onclick="loadThread(${x.threads[i].id})">
             <h2> ${x.threads[i].recipients[0].name} </h2>
             <p> ${x.threads[i].latest.body} </p>
         </div>
     `
 }
+
+//         // <div class="${shade}" id="conversation${i}" onclick="Calls.getThread(${x.threads[i].id})">
