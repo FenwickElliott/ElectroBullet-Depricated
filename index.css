@@ -21,22 +21,12 @@ nav {
     background-color: rgba(128, 128, 128, 0.75);
 }
 
-/* #bulk {
-    position: absolute;
-    top: 75px;
-    right: 0px;
-    background-color: red;
-    height: 100px;
-    width: 100px;
-} */
-
 #bulk {
     float: left;
     width: 75%;
     height: 100px;
-    /* background: red; */
 }
 
 #bulk .outgoing{
-    color: red;
+    text-align: right;
 }

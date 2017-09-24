@@ -9,7 +9,8 @@ function loadThread(id){
     Calls.getThread(id);
     bulk.innerHTML = '';
     jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
-        for (let i = 0; i < obj['thread'].length; i++){
+        // for (let i = 0; i < obj['thread'].length; i++){
+            for (let i = obj['thread'].length - 1; i >=0; i--){
             bulk.innerHTML += `<p class="${obj['thread'][i]['direction']}"X> ${obj['thread'][i]['body']} </p>`;
         }
       });
