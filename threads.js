@@ -7,12 +7,15 @@ var x = jsonfile.readFileSync('./db/threads.json');
 
 function loadThread(id){
     Calls.getThread(id);
-    let thread = jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
-        bulk.innerHTML = obj['thread'][0]['body'];
+    bulk.innerHTML = '';
+    jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
+        for (let i = 0; i < obj['thread'].length; i++){
+            bulk.innerHTML += `<p class="${obj['thread'][i]['direction']}"X> ${obj['thread'][i]['body']} </p>`;
+        }
       });
 }
 
-for (var i = 0; i < 15; i++){
+for (let i = 0; i < 15; i++){
     let shade;
     if ( i % 2 == 0){
         shade = 'light';
