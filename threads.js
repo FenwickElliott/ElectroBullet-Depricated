@@ -30,5 +30,3 @@ for (let i = 0; i < 15; i++){
         </div>
     `
 }
-
-//         // <div class="${shade}" id="conversation${i}" onclick="Calls.getThread(${x.threads[i].id})">
