@@ -32,8 +32,12 @@ nav {
 
 #bulk {
     float: left;
+    position: absolute;
+    top: 66px;
+    right: 0;
     width: 75%;
-    height: 100px;
+    bottom: 100px;
+    overflow: auto;
 }
 
 #bulk .outgoing{
