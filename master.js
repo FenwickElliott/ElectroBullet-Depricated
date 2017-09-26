@@ -1,9 +1,14 @@
 const jsonfile = require('jsonfile');
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 const Secrets = require('./secrets');
 const base_url = 'https://api.pushbullet.com/v2/';
+// need to manage loading of m
+initialize();
 const m = jsonfile.readFileSync('./db/threads.json');
+// const m = fs.readFileSync('./db/threads.json');
+
 
 function get (endpoint, target){
     fetch(base_url + endpoint, {
@@ -34,11 +39,39 @@ function memLoadThread(id){
     .then(function(json){
         bulk.innerHTML = '';
         json.thread.forEach(function(msg){
-            // why won't concat work?
-            // bulk.innerHTML.concat(`<p class="${msg.direction}">${msg.body}</p>`);
             bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
         })
     })
+}
+
+// function loadThread(id){
+//     try {
+//         let t = fs.readFileSync(`./db/thread${id}.json`);
+//         console.log(`thread ${id} found!`);
+//         console.dir(t);
+//     } catch (e) {
+//         getThread(id);
+//         console.log('getting');
+//     }
+// }
+
+function loadThread(id){
+    jsonfile.readFile(`./db/threads/thread${id}.json`, function(err, thread){
+        if(err){
+            // console.log(err);
+            return getThread(id);
+        }
+        console.dir(thread);
+        bulk.innerHTML = '';
+        thread.thread.forEach(function(msg){
+            bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
+        })
+    });
+}
+
+function getThread(id){
+    // console.log(`getting ${id}`);
+    get(`permanents/${Secrets.deviceIden}/_thread_${id}`, `threads/thread${id}`);
 }
 
 function loadMagazine(){
@@ -50,7 +83,7 @@ function loadMagazine(){
             shade = 'dark';
         }
         magazine.innerHTML += `
-            <div class="${shade}" id="conversation${i}" onclick="memLoadThread(${m.threads[i].id})">
+            <div class="${shade}" id="conversation${i}" onclick="loadThread(${m.threads[i].id})">
                 <h2> ${m.threads[i].recipients[0].name} </h2>
                 <p> ${m.threads[i].latest.body} </p>
             </div>
