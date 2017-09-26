@@ -41,6 +41,7 @@ function postMagazine(mag){
             </div>
         `
     }
+    loadThread(mag.threads[0].id);
 }
 
 function loadThread(id){
@@ -64,7 +65,6 @@ function getThread(id){
 }
 
 function postThread(thread){
-    // console.dir(thread);
     bulk.innerHTML = '';
     thread.thread.forEach(function(msg){
         bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
