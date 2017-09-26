@@ -56,7 +56,9 @@ function memLoadThread(id){
     .then(function(json){
         bulk.innerHTML = '';
         json.thread.forEach(function(msg){
-            bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`
+            // why won't concat work?
+            // bulk.innerHTML.concat(`<p class="${msg.direction}">${msg.body}</p>`);
+            bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
         })
     })
 }
