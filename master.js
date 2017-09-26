@@ -26,15 +26,39 @@ function initialize (){
     get('permanents/' + Secrets.deviceIden + '_threads', 'threads');
 }
 
-function getThread (id) {
+// function getThread (id) {
+//     fetch('https://api.pushbullet.com/v2/permanents/' + Secrets.deviceIden + '_thread_' + id, {
+//         headers: {"Access-Token": Secrets.apiKey}
+//     })
+//     .then(res => res.json())
+//     .then(function(json){
+//         jsonfile.writeFile('./db/threads/thread'+ id +'.json', json, err => console.log(err));
+//         return;
+//     });
+// }
+
+// function memThread(id){
+//     fetch('https://api.pushbullet.com/v2/permanents/' + Secrets.deviceIden + '_thread_' + id, {
+//         headers: {"Access-Token": Secrets.apiKey}
+//     })
+//     .then(res => res.json())
+//     .then(function(json){
+//         console.log(json);
+//         return json;
+//     })
+// }
+
+function memLoadThread(id){
     fetch('https://api.pushbullet.com/v2/permanents/' + Secrets.deviceIden + '_thread_' + id, {
         headers: {"Access-Token": Secrets.apiKey}
     })
     .then(res => res.json())
     .then(function(json){
-        jsonfile.writeFile('./db/threads/thread'+ id +'.json', json, err => console.log(err));
-        return;
-    });
+        bulk.innerHTML = '';
+        json.thread.forEach(function(msg){
+            bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`
+        })
+    })
 }
 
 function loadMagazine(){
@@ -46,7 +70,7 @@ function loadMagazine(){
             shade = 'dark';
         }
         magazine.innerHTML += `
-            <div class="${shade}" id="conversation${i}" onclick="loadThread(${m.threads[i].id})">
+            <div class="${shade}" id="conversation${i}" onclick="memLoadThread(${m.threads[i].id})">
                 <h2> ${m.threads[i].recipients[0].name} </h2>
                 <p> ${m.threads[i].latest.body} </p>
             </div>
@@ -54,14 +78,14 @@ function loadMagazine(){
     }
 }
 
-function loadThread(id){
-    getThread(id);
-    bulk.innerHTML = '';
-    jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
-            for (let i = obj['thread'].length - 1; i >=0; i--){
-            bulk.innerHTML += `<p class="${obj['thread'][i]['direction']}"X> ${obj['thread'][i]['body']} </p>`;
-        }
-      });
-}
+// function loadThread(id){
+//     getThread(id);
+//     bulk.innerHTML = '';
+//     jsonfile.readFile(`./db/threads/thread${id}.json`,function(err, obj) {
+//             for (let i = obj['thread'].length - 1; i >=0; i--){
+//             bulk.innerHTML += `<p class="${obj['thread'][i]['direction']}"> ${obj['thread'][i]['body']} </p>`;
+//         }
+//       });
+// }
 
 loadMagazine();
