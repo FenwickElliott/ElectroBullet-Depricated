@@ -70,3 +70,7 @@ function postThread(thread){
         bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
     })
 }
+
+function send(body){
+    alert(body);
+}
