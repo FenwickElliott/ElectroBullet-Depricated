@@ -12,18 +12,19 @@ function getMagazine(){
     .then(res => res.json())
     .then(function(res){
         postMagazine(res);
-        jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
-        // console.dir(res);
+        // magazine.json is redundant at this point
+        // jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
         res.threads.forEach(function(threadM){
-            // console.log(`threadM.id: ${threadM.id}, latestM.id: ${threadM.latest.id}`);
             jsonfile.readFile(`./db/threads/thread${threadM['id']}.json`, (err, threadI) =>{
                 if (err){
+                    // console.log('error becasue thread json doesnt exist')
                     getThread(threadM['id'])
                 }
-                // console.log(`threadM.id: ${threadM.id}, latestI.id: ${threadI['thread'][0].id}`);
                 if (threadM.latest.id != threadI['thread'][0].id){
+                    // console.log('refreshing outdated thread')
                     getThread(threadM['id'])
                 }
+                // console.log('threads are current')
             })
         })
     });
@@ -45,10 +46,13 @@ function postMagazine(mag){
             </div>
         `
     }
-    loadThread(mag.threads[0].id);
+    if (bulk.innerHTML == ''){
+        loadThread(mag.threads[0].id);
+    }
 }
 
 function loadThread(id){
+    // console.log('loading')
     let thread = jsonfile.readFile(`./db/threads/thread${id}.json`, (err, thread) =>{
         if (err){
             getThread(id);
