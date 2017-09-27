@@ -94,3 +94,7 @@ websocket.onmessage = function(e){
         })
     }
 }
+
+function send(body){
+    alert(body);
+}
