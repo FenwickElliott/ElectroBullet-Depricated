@@ -3,16 +3,7 @@ const fetch = require('node-fetch');
 
 const Secrets = require('./secrets');
 
-loadMagazine();
-
-function loadMagazine(){
-    mag = jsonfile.readFile('./db/mag.json', (err, res) => {
-        if (err){
-            getMagazine();
-        }
-        postMagazine(res);
-    })
-}
+getMagazine();
 
 function getMagazine(){
     fetch(`https://api.pushbullet.com/v2/permanents/${Secrets.deviceIden}_threads`, {
@@ -21,7 +12,7 @@ function getMagazine(){
     .then(res => res.json())
     .then(function(res){
         postMagazine(res);
-        jsonfile.writeFile('./db/mag.json', res, err => console.log(err));
+        // jsonfile.writeFile('./db/mag.json', res, err => console.log(err));
     });
 }
 
