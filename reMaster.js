@@ -12,7 +12,7 @@ function getMagazine(){
     .then(res => res.json())
     .then(function(res){
         postMagazine(res);
-        // jsonfile.writeFile('./db/mag.json', res, err => console.log(err));
+        jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
     });
 }
 
@@ -58,6 +58,21 @@ function getThread(id){
 function postThread(thread){
     bulk.innerHTML = '';
     thread.thread.forEach(function(msg){
-        bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
+        // bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
+        bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`;
     })
+}
+
+const websocket = new WebSocket('wss://stream.pushbullet.com/websocket/' + Secrets.apiKey);
+
+websocket.onmessage = function(e){
+    console.dir(e.data);
+    let data = JSON.parse(e.data);
+    if (data.push && data.push.notifications) {
+        data.push.notifications.forEach(function(n){
+            new Notification(data.push.notifications[0].title, {
+                body: data.push.notifications[0].body
+            })
+        })
+    }
 }
