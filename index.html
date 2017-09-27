@@ -12,10 +12,10 @@
         </nav>
         <div id="magazine"></div>
         <div id="bulk"></div>
-        <div id="input">
+        <form id="input">
             <input id="field" type="text" />
-            <input id="submit" type="submit" />
-        </div>
+            <input id="submit" type="submit" onclick="send(document.getElementById('field').value);"/>
+        </form>
 
         <script src="remaster.js"></script>
     </body>
