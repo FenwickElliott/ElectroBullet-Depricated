@@ -3,3 +3,4 @@ secrets.*
 get_me.json
 db/*
 dry.js
+notes/
