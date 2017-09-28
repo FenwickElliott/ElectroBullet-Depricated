@@ -3,6 +3,9 @@ const fetch = require('node-fetch');
 
 const Secrets = require('./secrets');
 
+let currentThread;
+let m;
+
 getMagazine();
 
 function getMagazine(){
@@ -11,6 +14,8 @@ function getMagazine(){
     })
     .then(res => res.json())
     .then(function(res){
+        currentThread = res.threads[0];
+        m = res.threads;
         postMagazine(res);
         // magazine.json is redundant at this point
         // jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
@@ -57,6 +62,7 @@ function loadThread(id){
         if (err){
             getThread(id);
         }
+        currentThread = m.find(x => x.id == id);
         postThread(thread);
     })
 }
@@ -96,5 +102,24 @@ websocket.onmessage = function(e){
 }
 
 function send(body){
-    alert(body);
+    packet = JSON.stringify({
+        push: {
+                conversation_iden: currentThread.recipients[0].address,
+                message: body,
+                package_name: "com.pushbullet.android",
+                source_user_iden: Secrets.iden,
+                target_device_iden: Secrets.deviceIden,
+                type: "messaging_extension_reply"
+            },
+        type: "push"
+    })
+
+    fetch("https://api.pushbullet.com/v2/ephemerals", {
+        method: 'POST',
+        headers: 'Content-Type: application/json',
+        headers: {"Access-Token": Secrets.apiKey},
+        body: packet
+    })
+    .then(res => res.json())
+    .then(res => console.log(res));
 }
