@@ -46,20 +46,25 @@ nav {
     text-align: right;
 }
 
-#input{
+/* #input{
     position: absolute;
     float: right;
     bottom: 0;
     height: 70px;
     right: 0;
     width: 75%;
-    /* border: 1px solid black; */
-}
+    border: 1px solid black;
+} */
 
 #field{
-    float:left;
-    width: 85%;
-    height: 100%;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+    width: 75%;
+    height: 100px;
 }
 
 #submit{
