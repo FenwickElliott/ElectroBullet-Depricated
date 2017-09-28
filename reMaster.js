@@ -3,16 +3,7 @@ const fetch = require('node-fetch');
 
 const Secrets = require('./secrets');
 
-loadMagazine();
-
-function loadMagazine(){
-    mag = jsonfile.readFile('./db/mag.json', (err, res) => {
-        if (err){
-            getMagazine();
-        }
-        postMagazine(res);
-    })
-}
+getMagazine();
 
 function getMagazine(){
     fetch(`https://api.pushbullet.com/v2/permanents/${Secrets.deviceIden}_threads`, {
@@ -21,7 +12,21 @@ function getMagazine(){
     .then(res => res.json())
     .then(function(res){
         postMagazine(res);
-        jsonfile.writeFile('./db/mag.json', res, err => console.log(err));
+        // magazine.json is redundant at this point
+        // jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
+        res.threads.forEach(function(threadM){
+            jsonfile.readFile(`./db/threads/thread${threadM['id']}.json`, (err, threadI) =>{
+                if (err){
+                    // console.log('error becasue thread json doesnt exist')
+                    getThread(threadM['id'])
+                }
+                if (threadM.latest.id != threadI['thread'][0].id){
+                    // console.log('refreshing outdated thread')
+                    getThread(threadM['id'])
+                }
+                // console.log('threads are current')
+            })
+        })
     });
 }
 
@@ -41,10 +46,13 @@ function postMagazine(mag){
             </div>
         `
     }
-    loadThread(mag.threads[0].id);
+    if (bulk.innerHTML == ''){
+        loadThread(mag.threads[0].id);
+    }
 }
 
 function loadThread(id){
+    // console.log('loading')
     let thread = jsonfile.readFile(`./db/threads/thread${id}.json`, (err, thread) =>{
         if (err){
             getThread(id);
@@ -59,7 +67,7 @@ function getThread(id){
     })
     .then(res => res.json())
     .then(function(json){
-        postThread(json)
+        // postThread(json)
         jsonfile.writeFile(`./db/threads/thread${id}.json`, json, err => console.log(err));
     })
 }
@@ -68,7 +76,23 @@ function postThread(thread){
     bulk.innerHTML = '';
     thread.thread.forEach(function(msg){
         bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
+        // bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`;
     })
+}
+
+const websocket = new WebSocket('wss://stream.pushbullet.com/websocket/' + Secrets.apiKey);
+
+websocket.onmessage = function(e){
+    // console.dir(e.data);
+    let data = JSON.parse(e.data);
+    if (data.push && data.push.notifications) {
+        getMagazine();
+        data.push.notifications.forEach(function(n){
+            new Notification(data.push.notifications[0].title, {
+                body: data.push.notifications[0].body
+            })
+        })
+    }
 }
 
 function send(body){
