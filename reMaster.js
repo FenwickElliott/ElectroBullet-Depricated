@@ -54,6 +54,7 @@ function postMagazine(mag){
     if (bulk.innerHTML == ''){
         loadThread(mag.threads[0].id);
     }
+
 }
 
 function loadThread(id){
@@ -84,6 +85,7 @@ function postThread(thread){
         bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
         // bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`;
     })
+    bulk.scrollTop = bulk.scrollHeight;
 }
 
 const websocket = new WebSocket('wss://stream.pushbullet.com/websocket/' + Secrets.apiKey);
