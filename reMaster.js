@@ -17,21 +17,27 @@ function getMagazine(){
         currentThread = res.threads[0];
         m = res.threads;
         postMagazine(res);
-        // magazine.json is redundant at this point
-        // jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
+        jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
         res.threads.forEach(function(threadM){
             jsonfile.readFile(`./db/threads/thread${threadM['id']}.json`, (err, threadI) =>{
                 if (err){
-                    // console.log('error becasue thread json doesnt exist')
                     getThread(threadM['id'])
                 }
                 if (threadM.latest.id != threadI['thread'][0].id){
-                    // console.log('refreshing outdated thread')
                     getThread(threadM['id'])
                 }
-                // console.log('threads are current')
             })
         })
+    })
+    .catch(function(err){
+        // load magazine from disk if it's there
+        jsonfile.readFile("./db/magazine.json", (err, mag) => {
+            if (err){
+                alert("I'm sorry but I can't connect to your PushBullet account, there's not much I can do about that so I'm going back to bed.");
+            }
+            postMagazine(mag)
+            m = mag;
+        });
     });
 }
 
@@ -54,6 +60,7 @@ function postMagazine(mag){
     if (bulk.innerHTML == ''){
         loadThread(mag.threads[0].id);
     }
+
 }
 
 function loadThread(id){
@@ -84,6 +91,7 @@ function postThread(thread){
         bulk.innerHTML = `<p class="${msg.direction}">${msg.body}</p>` + bulk.innerHTML
         // bulk.innerHTML += `<p class="${msg.direction}">${msg.body}</p>`;
     })
+    bulk.scrollTop = bulk.scrollHeight;
 }
 
 const websocket = new WebSocket('wss://stream.pushbullet.com/websocket/' + Secrets.apiKey);
@@ -122,4 +130,7 @@ function send(body){
     })
     .then(res => res.json())
     .then(res => console.log(res));
+}
+function newFunction() {
+    return 'currentThread';
 }
