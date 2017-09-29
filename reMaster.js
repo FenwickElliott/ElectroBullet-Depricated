@@ -14,10 +14,11 @@ function getMagazine(){
     })
     .then(res => res.json())
     .then(function(res){
-        currentThread = res.threads[0];
+        // currentThread = res.threads[0];
         m = res.threads;
         postMagazine(res);
         jsonfile.writeFile('./db/magazine.json', res, err => console.log(err));
+        // load threads
         res.threads.forEach(function(threadM){
             jsonfile.readFile(`./db/threads/thread${threadM['id']}.json`, (err, threadI) =>{
                 if (err){
@@ -34,14 +35,16 @@ function getMagazine(){
         jsonfile.readFile("./db/magazine.json", (err, mag) => {
             if (err){
                 alert("I'm sorry but I can't connect to your PushBullet account, there's not much I can do about that so I'm going back to bed.");
+                // figure out how to close window
             }
+            m = mag.threads;
             postMagazine(mag)
-            m = mag;
         });
     });
 }
 
 function postMagazine(mag){
+    // look into forEach with index
     magazine.innerHTML = '';
     for (let i = 0; i < mag.threads.length; i++){
         let shade;
@@ -57,19 +60,14 @@ function postMagazine(mag){
             </div>
         `
     }
-    if (bulk.innerHTML == ''){
-        loadThread(mag.threads[0].id);
-    }
-
 }
 
 function loadThread(id){
-    // console.log('loading')
-    let thread = jsonfile.readFile(`./db/threads/thread${id}.json`, (err, thread) =>{
-        if (err){
+    currentThread = m.find(x => x.id == id);
+    jsonfile.readFile(`./db/threads/thread${id}.json`, (err, thread) =>{
+        if (err || currentThread.latest.timestamp != thread.thread[0].timestamp){
             getThread(id);
         }
-        currentThread = m.find(x => x.id == id);
         postThread(thread);
     })
 }
@@ -129,8 +127,5 @@ function send(body){
         body: packet
     })
     .then(res => res.json())
-    .then(res => console.log(res));
-}
-function newFunction() {
-    return 'currentThread';
+    .catch(err => alert(err));
 }
