@@ -9,10 +9,13 @@ let win
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
+        // manage title bar
+        titleBarStyle: 'hidden',
         x: 0,
         y: 0,
         width: 960,
-        height: 600
+        height: 600,
+        icon: path.join(__dirname, 'assets/icons/png/png64x64.png')
     })
 
     // and load the index.html of the app.
