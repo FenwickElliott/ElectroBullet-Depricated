@@ -60,6 +60,10 @@ function postMagazine(mag){
             </div>
         `
     }
+    if (bulk.innerHTML == ''){
+        loadThread(mag.threads[0].id);
+    }
+
 }
 
 function loadThread(id){
